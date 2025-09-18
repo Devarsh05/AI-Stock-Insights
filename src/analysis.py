@@ -16,7 +16,6 @@ def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     - Volume_Change
     """
     df = df.copy()
-    # ensure Close exists
     if 'Close' not in df.columns:
         candidates = [c for c in df.columns if 'close' in str(c).lower()]
         if candidates:
@@ -31,12 +30,12 @@ def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df['MA_diff'] = df['MA20'] - df['MA50']
 
     # Returns & momentum
-    df['Return1'] = df['Close'].pct_change()
-    df['Return3'] = df['Close'].pct_change(3)
-    df['Momentum5'] = df['Close'] - df['Close'].shift(5)
+    df['Return1'] = df['Close'].pct_change().fillna(0)
+    df['Return3'] = df['Close'].pct_change(3).fillna(0)
+    df['Momentum5'] = (df['Close'] - df['Close'].shift(5)).fillna(0)
 
-    # Volatility (std of price) and Bollinger bands (level)
-    df['Volatility20'] = df['Close'].rolling(window=20, min_periods=1).std()
+    # Volatility and Bollinger Bands
+    df['Volatility20'] = df['Close'].rolling(window=20, min_periods=1).std().fillna(0)
     df['BB_Mid'] = df['MA20']
     df['BB_Upper'] = df['BB_Mid'] + 2 * df['Volatility20']
     df['BB_Lower'] = df['BB_Mid'] - 2 * df['Volatility20']
@@ -45,12 +44,12 @@ def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     delta = df['Close'].diff()
     gain = delta.clip(lower=0)
     loss = -delta.clip(upper=0)
-    roll_up = gain.rolling(window=14, min_periods=14).mean()
-    roll_down = loss.rolling(window=14, min_periods=14).mean().replace(0, 1e-10)
+    roll_up = gain.rolling(window=14, min_periods=1).mean()
+    roll_down = loss.rolling(window=14, min_periods=1).mean().replace(0, 1e-10)
     rs = roll_up / roll_down
     df['RSI14'] = 100 - (100 / (1 + rs))
 
-    # ATR14 (Average True Range)
+    # ATR14
     if all(col in df.columns for col in ['High', 'Low']):
         prev_close = df['Close'].shift(1)
         tr1 = df['High'] - df['Low']
@@ -59,12 +58,15 @@ def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
         tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
         df['ATR14'] = tr.rolling(window=14, min_periods=1).mean()
     else:
-        df['ATR14'] = np.nan
+        df['ATR14'] = 0  # instead of NaN
 
     # Volume change
     if 'Volume' in df.columns:
-        df['Volume_Change'] = df['Volume'].pct_change()
+        df['Volume_Change'] = df['Volume'].pct_change().fillna(0)
     else:
-        df['Volume_Change'] = np.nan
+        df['Volume_Change'] = 0  # instead of NaN
+
+    # 🔎 DEBUG: Check NaN counts per column
+    print("DEBUG: NaN counts after indicators:\n", df.isna().sum())
 
     return df

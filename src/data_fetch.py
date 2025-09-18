@@ -15,6 +15,7 @@ def get_stock_data(ticker: str, period: str = "5y", interval: str = "1d") -> pd.
         progress=False,
         auto_adjust=True
     )
+    print(f"DEBUG: Fetched {len(df)} rows for {ticker} with period={period}, interval={interval}")
     if df is None or df.empty:
         raise ValueError(f"No data found for ticker '{ticker}' with period='{period}'")
     df.index = pd.to_datetime(df.index)

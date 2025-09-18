@@ -26,18 +26,39 @@ def prepare_dataset(df: pd.DataFrame, horizon: int = 1, features: List[str] = No
     - features: list of column names to use (default uses DEFAULT_FEATURES filtered by availability)
     """
     df = add_technical_indicators(df)
+
     if features is None:
         features = DEFAULT_FEATURES
+
     # keep only features that exist
     features = [f for f in features if f in df.columns]
+
     if 'Close' not in df.columns:
         raise KeyError("prepare_dataset requires 'Close' in dataframe")
+
     df = df.copy()
     df['Target'] = df['Close'].shift(-horizon)
+
+    # Drop missing values
     df = df.dropna(subset=features + ['Target'])
+
+    # 🔎 DEBUGGING PRINTS
+    print("DEBUG: Total rows after dropna:", len(df))
+    print("DEBUG: Using horizon:", horizon)
+    print("DEBUG: Features used:", features)
+
+    # Safety check
+    if len(df) < 100:  
+        raise ValueError(
+            f"Not enough rows to train (have {len(df)} rows, need >= 100). "
+            "Try a longer period in data_fetch.py (e.g., '2y' or '5y')."
+        )
+
     X = df[features].copy()
     y = df['Target'].copy()
+
     return X, y
+
 
 def time_train_test_split(X: pd.DataFrame, y: pd.Series, test_size: float = 0.2):
     n = len(X)
