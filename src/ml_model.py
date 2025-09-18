@@ -70,7 +70,7 @@ def train_and_evaluate(X: pd.DataFrame, y: pd.Series, model_type: str = 'rf', te
     - preds, y_test, X_test
     - feature_importances (dict), if available or via permutation
     """
-    if len(X) < 10:
+    if len(X) < 200:
         raise ValueError("Not enough rows to train (need >= 10).")
     X_train, X_test, y_train, y_test = time_train_test_split(X, y, test_size=test_size)
     model = build_model(model_type)

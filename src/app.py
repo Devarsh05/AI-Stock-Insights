@@ -47,20 +47,18 @@ if run_button:
         st.stop()
 
     df = normalize_dataframe(raw)
-    # normalize & debug rows
-df = normalize_dataframe(raw)
+    
+    # Debugging: show how many rows were fetched and the date range
+    st.write(f"Rows fetched (raw): {len(raw)}")
+    try:
+        st.write(f"Date range: {raw.index.min().date()} to {raw.index.max().date()}")
+    except Exception:
+        pass
 
-# Debugging: show how many rows were fetched and the date range
-st.write(f"Rows fetched (raw): {len(raw)}")
-try:
-    st.write(f"Date range: {raw.index.min().date()} to {raw.index.max().date()}")
-except Exception:
-    pass
-
-# Add technical indicators early so you can see how many rows remain AFTER indicators
-from analysis import add_technical_indicators
-df_with_ind = add_technical_indicators(df)
-st.write(f"Rows after adding indicators (rows with indicator values may be fewer due to rolling windows): {len(df_with_ind)}")
+    # Add technical indicators early so you can see how many rows remain AFTER indicators
+    from analysis import add_technical_indicators
+    df_with_ind = add_technical_indicators(df)
+    st.write(f"Rows after adding indicators (rows with indicator values may be fewer due to rolling windows): {len(df_with_ind)}")
 
     st.write("Columns detected:", df.columns.tolist())
 
