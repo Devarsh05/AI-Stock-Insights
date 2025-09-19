@@ -1,6 +1,6 @@
 # 📈 AI Stock Insights
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/Devarsh05/AI-Stock-Insights/main/src/app.py)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/devarsh05/AI-Stock-Insights/main/src/app.py)
 
 **AI Stock Insights** is an interactive web application for exploring stock market data, analyzing technical indicators, and making short-term predictions using machine learning models. Built with **Python**, **Streamlit**, and **scikit-learn**, this app is designed for investors, analysts, and enthusiasts who want AI-driven insights on stock prices.
 
@@ -43,7 +43,7 @@
 
 ## 🚀 Live Demo
 
-[Open AI Stock Insights in Streamlit](https://share.streamlit.io/Devarsh05/AI-Stock-Insights/main/src/app.py)
+[Open AI Stock Insights in Streamlit](https://share.streamlit.io/devarsh05/AI-Stock-Insights/main/src/app.py)
 
 ---
 
