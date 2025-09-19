@@ -1,5 +1,6 @@
 # src/ml_model.py
 import numpy as np
+import logging
 import pandas as pd
 from typing import Tuple, List, Dict, Any
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
@@ -10,6 +11,9 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.inspection import permutation_importance
 
 from analysis import add_technical_indicators
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 DEFAULT_FEATURES = [
     'Close','MA10','MA20','MA50','MA_diff',
@@ -43,9 +47,9 @@ def prepare_dataset(df: pd.DataFrame, horizon: int = 1, features: List[str] = No
     df = df.dropna(subset=features + ['Target'])
 
     # 🔎 DEBUGGING PRINTS
-    print("DEBUG: Total rows after dropna:", len(df))
-    print("DEBUG: Using horizon:", horizon)
-    print("DEBUG: Features used:", features)
+    logger.info("DEBUG: Total rows after dropna:", len(df))
+    logger.info("DEBUG: Using horizon:", horizon)
+    logger.info("DEBUG: Features used:", features)
 
     # Safety check
     if len(df) < 100:  

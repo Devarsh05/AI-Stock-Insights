@@ -1,6 +1,12 @@
 # src/analysis.py
 import pandas as pd
 import numpy as np
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 
 def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -67,6 +73,6 @@ def add_technical_indicators(df: pd.DataFrame) -> pd.DataFrame:
         df['Volume_Change'] = 0  # instead of NaN
 
     # 🔎 DEBUG: Check NaN counts per column
-    print("DEBUG: NaN counts after indicators:\n", df.isna().sum())
+    logger.info("DEBUG: NaN counts after indicators:\n", df.isna().sum())
 
     return df
